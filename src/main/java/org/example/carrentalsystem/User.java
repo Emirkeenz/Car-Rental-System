@@ -3,10 +3,11 @@ package org.example.carrentalsystem;
 public abstract class User {
     protected String userName;
     protected String password;
-
-    public User(String userName, String password) {
+    Role role;
+    public User(String userName, String password, Role role) {
         this.userName = userName;
         this.password = password;
+        this.role = role;
     }
 
     public void setUserName(String userName) {
