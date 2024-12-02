@@ -17,13 +17,13 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab text="List of cars">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0">
+              <AnchorPane>
                      <children>
                         <HBox alignment="TOP_CENTER" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -81,7 +81,7 @@
                               <VBox alignment="TOP_CENTER" spacing="20.0">
                                  <children>
                                     <Label text="List of available cars" />
-                                    <TableView editable="true" prefHeight="259.0">
+                                    <TableView editable="true">
                                       <columns>
                                         <TableColumn prefWidth="73.0" text="Car ID" />
                                         <TableColumn minWidth="6.0" prefWidth="65.0" text="Brand" />
@@ -105,7 +105,7 @@
           </Tab>
           <Tab text="Your Rents">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0">
+              <AnchorPane>
                      <children>
                         <HBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
