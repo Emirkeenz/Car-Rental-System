@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.carrentalsystem.LoginController">
    <children>
       <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -26,9 +26,9 @@
             <VBox alignment="CENTER" spacing="15.0">
                <children>
                   <Label style="-fx-wrap-text: true;" text="Welcome to the car rental application" />
-                  <TextField promptText="Enter your username" />
-                  <PasswordField promptText="Enter the password" />
-                  <Button mnemonicParsing="false" text="Login" />
+                  <TextField fx:id="usernameField" promptText="Enter your username" />
+                  <PasswordField fx:id="passwordField" promptText="Enter the password" />
+                  <Button fx:id="loginButton" mnemonicParsing="false" text="Login" />
                </children>
                <padding>
                   <Insets bottom="35.0" left="35.0" right="35.0" top="35.0" />

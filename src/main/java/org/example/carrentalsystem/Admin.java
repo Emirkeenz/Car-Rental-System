@@ -1,7 +1,7 @@
 package org.example.carrentalsystem;
 
 public class Admin extends User {
-    public Admin(String userName, String password , Role role) {
-        super(userName, password, role);
+    public Admin(int userId, String userName, String password , Role role) {
+        super(userId, userName, password, role);
     }
 }
