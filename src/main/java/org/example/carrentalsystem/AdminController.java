@@ -94,7 +94,7 @@ public class AdminController {
             String model = carModelField.getText();
             double price = Double.parseDouble(carPriceField.getText());
 
-            Car car = new Car(0, name, brand, model, price);
+            Car car = new Car(name, brand, model, price); // carId будет автоматически генерироваться
             carsDAO.addCar(car);
             loadCars();
             clearCarFields();
@@ -145,7 +145,7 @@ public class AdminController {
             String password = userPasswordField.getText();
             String role = userRoleField.getText();
 
-            User user = new Client(0, name, password, Role.valueOf(role.toUpperCase()));
+            User user = new Client(0, name, password, Role.valueOf(role.toUpperCase())); // При создании пользователь получает свою роль
             usersDAO.addUser(user);
             loadUsers();
             clearUserFields();

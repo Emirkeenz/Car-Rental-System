@@ -22,18 +22,31 @@ public class CarsDAO {
 
     // Добавление машины
     public void addCar(Car car) {
-        String sql = "INSERT INTO Cars (carId, carName, carBrand, carModel, price) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, car.getCarId());
-            stmt.setString(2, car.getCarName());
-            stmt.setString(3, car.getCarBrand());
-            stmt.setString(4, car.getCarModel());
-            stmt.setDouble(5, car.getPrice());
-            stmt.executeUpdate();
+        String sql = "INSERT INTO Cars (carName, carBrand, carModel, price) VALUES (?, ?, ?, ?) RETURNING carId";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setString(1, car.getCarName());
+            stmt.setString(2, car.getCarBrand());
+            stmt.setString(3, car.getCarModel());
+            stmt.setDouble(4, car.getPrice());
+
+            System.out.println("Executing query: " + stmt.toString()); // Логирование SQL-запроса
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        car.setCarId(generatedKeys.getInt(1));
+                        System.out.println("Generated carId: " + car.getCarId()); // Логирование сгенерированного ID
+                    }
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Error executing addCar: " + e.getMessage());
         }
     }
+
 
     // Удаление машины
     public void removeCar(int carId) {
@@ -68,12 +81,12 @@ public class CarsDAO {
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Car car = new Car(
-                        rs.getInt("carId"),
                         rs.getString("carName"),
                         rs.getString("carBrand"),
                         rs.getString("carModel"),
                         rs.getDouble("price")
                 );
+                car.setCarId(rs.getInt("carId"));  // carId будет извлечен и установлен отдельно
                 cars.add(car);
             }
         } catch (SQLException e) {
@@ -89,13 +102,14 @@ public class CarsDAO {
             stmt.setInt(1, carId);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    return new Car(
-                            rs.getInt("carId"),
+                    Car car = new Car(
                             rs.getString("carName"),
                             rs.getString("carBrand"),
                             rs.getString("carModel"),
                             rs.getDouble("price")
                     );
+                    car.setCarId(rs.getInt("carId"));  // Устанавливаем carId после создания объекта
+                    return car;
                 }
             }
         } catch (SQLException e) {
@@ -103,4 +117,5 @@ public class CarsDAO {
         }
         return null;
     }
+
 }

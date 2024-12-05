@@ -7,8 +7,7 @@ public class Car {
     protected String carModel;
     protected double price;
 
-    public Car(int carId, String carName, String carBrand, String carModel, double price) {
-        this.carId = carId;
+    public Car(String carName, String carBrand, String carModel, double price) {
         this.carName = carName;
         this.carBrand = carBrand;
         this.carModel = carModel;
