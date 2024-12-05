@@ -1,16 +1,21 @@
 package org.example.carrentalsystem;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class User {
     protected int userId;
     protected String userName;
     protected String password;
     protected Role role;
+    private List<Car> rents; // Список машин в аренде
 
     public User(int userId, String userName, String password, Role role) {
         this.userId = userId;
         this.userName = userName;
         this.password = password;
         this.role = role;
+        this.rents = new ArrayList<>();
     }
 
     public int getUserId() {
@@ -43,6 +48,25 @@ public abstract class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Car> getRents() {
+        return rents;
+    }
+
+    public void setRents(List<Car> rents) {
+        this.rents = rents;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", role=" + role +
+                ", rents=" + rents +
+                '}';
     }
 }
 

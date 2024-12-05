@@ -49,13 +49,13 @@ public class UserDAO {
     }
 
     // Метод для обновления пользователя
-    public boolean updateUser(int userId, String newUserName, String newPassword, String newRole) {
+    public boolean updateUser(User user) {
         String sql = "UPDATE Users SET userName = ?, password = ?, role = ? WHERE userId = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, newUserName);
-            statement.setString(2, newPassword);
-            statement.setString(3, newRole);
-            statement.setInt(4, userId);
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getPassword());
+            statement.setString(3, user.getRole().toString()); // Преобразуем Role в String
+            statement.setInt(4, user.getUserId());
             int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {

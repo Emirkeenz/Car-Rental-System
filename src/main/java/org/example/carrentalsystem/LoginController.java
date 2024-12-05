@@ -1,10 +1,16 @@
 package org.example.carrentalsystem;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class LoginController {
 
@@ -17,16 +23,14 @@ public class LoginController {
     @FXML
     private Button loginButton;
 
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public LoginController() {
-        // Создание экземпляра UserDAO для взаимодействия с базой данных
-        userDAO = new UserDAO();
+        userDAO = new UserDAO(); // Создание экземпляра UserDAO для взаимодействия с базой данных
     }
 
     @FXML
     public void initialize() {
-        // Привязываем обработчик к кнопке логина
         loginButton.setOnAction(event -> handleLogin());
     }
 
@@ -41,27 +45,24 @@ public class LoginController {
 
         User user = authenticateUser(username, password);
         if (user != null) {
-            // Логика для успешного входа
-            showAlert("Success", "Login successful! Welcome, " + user.getUserName());
-            // Здесь можно перейти на другой экран в зависимости от роли (например, для администратора или клиента)
-            navigateToDashboard(user);  // Перенаправление в зависимости от роли
+            // Логика успешного входа
+            navigateToDashboard(user); // Перенаправление в зависимости от роли
         } else {
             showAlert("Error", "Invalid username or password.");
         }
     }
 
     private User authenticateUser(String username, String password) {
-        // Получаем всех пользователей и ищем соответствие по имени пользователя и паролю
+        // Проверяем имя пользователя и пароль
         for (User user : userDAO.getAllUsers()) {
             if (user.getUserName().equals(username) && user.getPassword().equals(password)) {
                 return user;
             }
         }
-        return null;  // Если пользователь не найден
+        return null; // Пользователь не найден
     }
 
     private void showAlert(String title, String message) {
-        // Отображаем сообщение об ошибке или успехе
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
@@ -70,15 +71,35 @@ public class LoginController {
     }
 
     private void navigateToDashboard(User user) {
-        // Логика перехода в зависимости от роли пользователя (к примеру, администратор или клиент)
+        String fxmlFile;
+        String title;
+
         if (user.getRole() == Role.ADMIN) {
-            // Перенаправляем на экран администратора
-            System.out.println("Welcome, Admin!");
-            // Здесь можно использовать метод для загрузки соответствующего экрана для админа
+            fxmlFile = "AdminPanel.fxml"; // Файл интерфейса для администратора
+            title = "Admin Dashboard";
         } else if (user.getRole() == Role.CLIENT) {
-            // Перенаправляем на экран клиента
-            System.out.println("Welcome, Client!");
-            // Здесь можно использовать метод для загрузки соответствующего экрана для клиента
+            fxmlFile = "ClientPanel.fxml"; // Файл интерфейса для клиента
+            title = "Client Dashboard";
+        } else {
+            showAlert("Error", "Unknown role: " + user.getRole());
+            return;
+        }
+
+        loadScene(fxmlFile, title);
+    }
+
+    private void loadScene(String fxmlFile, String title) {
+        try {
+            // Загружаем FXML-файл
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+
+            // Получаем текущую сцену и меняем её
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setTitle(title);
+            stage.setScene(new Scene(root));
+        } catch (IOException e) {
+            showAlert("Error", "Failed to load " + title + " screen.");
         }
     }
 }
