@@ -10,8 +10,7 @@ public abstract class User {
     protected Role role;
     private List<Car> rents; // Список машин в аренде
 
-    public User(int userId, String userName, String password, Role role) {
-        this.userId = userId;
+    public User(String userName, String password, Role role) {
         this.userName = userName;
         this.password = password;
         this.role = role;

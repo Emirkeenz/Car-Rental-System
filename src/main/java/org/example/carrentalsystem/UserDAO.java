@@ -22,19 +22,23 @@ public class UserDAO {
 
     // Метод для добавления пользователя
     public void addUser(User user) {
-        String query = "INSERT INTO users (userId, userName, password, role) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?) RETURNING userid";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, user.getUserId());
-            statement.setString(2, user.getUserName());
-            statement.setString(3, user.getPassword());
-            statement.setString(4, user.getRole().toString());  // Предполагается, что Role является enum
+            statement.setString(1, user.getUserName());
+            statement.setString(2, user.getPassword());
+            statement.setString(3, user.getRole().toString());
 
-            statement.executeUpdate();
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int generatedId = resultSet.getInt("userid");
+                user.setUserId(generatedId); // Сохранение сгенерированного ID в объекте
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
     // Метод для удаления пользователя
     public void removeUser(int userId) {
@@ -72,18 +76,21 @@ public class UserDAO {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
-                int userId = resultSet.getInt("userId");
-                String userName = resultSet.getString("userName");
+                String userName = resultSet.getString("username");
                 String password = resultSet.getString("password");
                 String roleString = resultSet.getString("role");
-                Role role = Role.valueOf(roleString);  // Преобразуем строку в Enum
+                Role role = Role.valueOf(roleString.toUpperCase());
 
-                // Используем Client или Admin в зависимости от роли
+                User user;
                 if ("ADMIN".equalsIgnoreCase(roleString)) {
-                    users.add(new Admin(userId, userName, password, role));
+                    user = new Admin(userName, password, role); // Используем конструктор без userId
                 } else {
-                    users.add(new Client(userId, userName, password, role));
+                    user = new Client(userName, password, role); // Используем конструктор без userId
                 }
+
+                // Устанавливаем userId после создания объекта
+                user.setUserId(resultSet.getInt("userid"));
+                users.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();

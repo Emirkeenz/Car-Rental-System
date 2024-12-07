@@ -145,7 +145,7 @@ public class AdminController {
             String password = userPasswordField.getText();
             String role = userRoleField.getText();
 
-            User user = new Client(0, name, password, Role.valueOf(role.toUpperCase())); // При создании пользователь получает свою роль
+            User user = new Client(name, password, Role.valueOf(role.toUpperCase())); // При создании пользователь получает свою роль
             usersDAO.addUser(user);
             loadUsers();
             clearUserFields();
