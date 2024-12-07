@@ -54,6 +54,19 @@ public class AdminController {
     private final ObservableList<Car> carList = FXCollections.observableArrayList();
     private final ObservableList<User> userList = FXCollections.observableArrayList();
 
+    private void enterCarEditMode(Car car) {
+        carNameField.setText(car.getCarName());
+        carBrandField.setText(car.getCarBrand());
+        carModelField.setText(car.getCarModel());
+        carPriceField.setText(String.valueOf(car.getPrice()));
+    }
+
+    private void enterUserEditMode(User user) {
+        userNameField.setText(user.getUserName());
+        userPasswordField.setText(user.getPassword());
+        userRoleField.setText(user.getRole().toString());
+    }
+
     @FXML
     public void initialize() {
         // Инициализация таблицы машин
@@ -76,6 +89,24 @@ public class AdminController {
         // Загрузка данных из базы
         loadCars();
         loadUsers();
+
+        carsTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Car selectedCar = carsTable.getSelectionModel().getSelectedItem();
+                if (selectedCar != null) {
+                    enterCarEditMode(selectedCar);
+                }
+            }
+        });
+
+        usersTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                User selectedUser = usersTable.getSelectionModel().getSelectedItem();
+                if (selectedUser != null) {
+                    enterUserEditMode(selectedUser);
+                }
+            }
+        });
     }
 
     private void loadCars() {
@@ -190,6 +221,7 @@ public class AdminController {
     }
 
     private void clearCarFields() {
+        carNameField.clear();
         carBrandField.clear();
         carModelField.clear();
         carPriceField.clear();
