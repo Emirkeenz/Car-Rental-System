@@ -1,5 +1,6 @@
 package org.example.carrentalsystem;
 
+import java.sql.Date;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -45,14 +46,28 @@ public class AdminController {
     private TableColumn<User, String> userRoleColumn;
     @FXML
     private TableColumn<User, String> userPasswordColumn;
+
     @FXML
-    private TableColumn<Client, Integer> userRentsColumn;
+    private TableView<Reserve> rentsTable;
+    @FXML
+    private TableColumn<Reserve, Integer> rentsColumn;
+    @FXML
+    private TableColumn<Car, Integer> carIdColumnReserved;
+    @FXML
+    private TableColumn<User, Integer> userIdColumnReserved;
+    @FXML
+    private TableColumn<Reserve, Date> dateReservedColumn;
+    @FXML
+    private TableColumn<Reserve, Date> dateReturnedColumn;
+
 
     private final CarsDAO carsDAO = new CarsDAO();
     private final UserDAO usersDAO = new UserDAO();
+    private final ReserveDAO reserveDAO = new ReserveDAO();
 
     private final ObservableList<Car> carList = FXCollections.observableArrayList();
     private final ObservableList<User> userList = FXCollections.observableArrayList();
+    private final ObservableList<Reserve> reserveList = FXCollections.observableArrayList();
 
     private void enterCarEditMode(Car car) {
         carNameField.setText(car.getCarName());
@@ -85,6 +100,14 @@ public class AdminController {
         userRoleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         usersTable.setItems(userList);
+
+        rentsColumn.setCellValueFactory(new PropertyValueFactory<>("reserveId"));
+        carIdColumnReserved.setCellValueFactory(new PropertyValueFactory<>("carId"));
+        userIdColumnReserved.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        dateReservedColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        dateReturnedColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+
+        rentsTable.setItems(reserveList);
 
         // Загрузка данных из базы
         loadCars();

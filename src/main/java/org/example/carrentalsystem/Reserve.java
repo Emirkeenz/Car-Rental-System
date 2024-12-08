@@ -3,8 +3,8 @@ package org.example.carrentalsystem;
 import java.util.Date;
 
 public class Reserve {
-    private Date startDate;
-    private Date endDate;
+    protected Date startDate;
+    protected Date endDate;
     protected int userId;
     protected int carId;
     protected int reserveId;
