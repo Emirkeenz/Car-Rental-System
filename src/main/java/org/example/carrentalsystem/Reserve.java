@@ -17,6 +17,10 @@ public class Reserve {
         this.reserveId = reserveId;
     }
 
+    public Reserve() {
+
+    }
+
     public Date getStartDate() {
         return startDate;
     }

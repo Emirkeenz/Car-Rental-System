@@ -8,9 +8,9 @@ public class CarsDAO {
     private Connection connection;
 
     public CarsDAO() {
-        String url = "jdbc:postgresql:car_rental_system";
-        String username = "postgres";
-        String password = "Tls06141301";
+        String url = "jdbc:postgresql:sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0@dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com/car_rental_system";
+        String username = "postgres1";
+        String password = "sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0";
 
         try {
             connection = DriverManager.getConnection(url, username, password);
