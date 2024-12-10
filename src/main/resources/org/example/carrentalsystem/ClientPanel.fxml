@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.carrentalsystem.ClientController">
    <children>
       <TabPane tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -43,16 +42,16 @@
                                           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                          <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                          <TextField GridPane.columnIndex="1" />
-                                          <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <DatePicker fx:id="dateRentedField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <DatePicker fx:id="dateReturnedField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                          <TextField fx:id="carIDField" GridPane.columnIndex="1" />
+                                          <TextField fx:id="carBrandField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                           <Label text="Car ID" />
                                           <Label text="Brand" GridPane.rowIndex="1" />
                                           <Label text="Date Rented" GridPane.rowIndex="3" />
                                           <Label text="Date Returned" GridPane.rowIndex="4" />
                                           <Label text="Model" GridPane.rowIndex="2" />
-                                          <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <TextField fx:id="carModelField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                        </children>
                                     </GridPane>
                                     <GridPane>
@@ -70,7 +69,7 @@
                                           <Label text="Price a day" />
                                           <Label text="Amount of days" GridPane.rowIndex="1" />
                                           <Label text="Total" GridPane.rowIndex="2" />
-                                          <Button mnemonicParsing="false" text="Submit a rent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                          <Button fx:id="rentSubmitButton" mnemonicParsing="false" onAction="#submitRent" text="Submit a rent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                           <Label text="Price a day __" GridPane.columnIndex="1" />
                                           <Label text="Amount of days __" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                           <Label text="Total __" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -81,12 +80,12 @@
                               <VBox alignment="TOP_CENTER" spacing="20.0">
                                  <children>
                                     <Label text="List of available cars" />
-                                    <TableView editable="true">
+                                    <TableView fx:id="carsTable" editable="true">
                                       <columns>
-                                        <TableColumn prefWidth="73.0" text="Car ID" />
-                                        <TableColumn minWidth="6.0" prefWidth="65.0" text="Brand" />
-                                          <TableColumn minWidth="6.0" prefWidth="63.0" text="Model" />
-                                          <TableColumn minWidth="6.0" prefWidth="63.0" text="Price" />
+                                        <TableColumn fx:id="carIDColumn" prefWidth="73.0" text="Car ID" />
+                                        <TableColumn fx:id="carBrandColumn" minWidth="6.0" prefWidth="65.0" text="Brand" />
+                                          <TableColumn fx:id="carModelColumn" minWidth="6.0" prefWidth="63.0" text="Model" />
+                                          <TableColumn fx:id="carPriceColumn" minWidth="6.0" prefWidth="63.0" text="Price" />
                                       </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -124,7 +123,7 @@
                                        <children>
                                           <Label text="Car ID" />
                                           <Label text="Car ID" GridPane.columnIndex="1" />
-                                          <Button mnemonicParsing="false" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <Button fx:id="deleteButtom" mnemonicParsing="false" onAction="#deleteYourCar" text="Delete" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -132,13 +131,13 @@
                               <VBox alignment="TOP_CENTER" spacing="15.0">
                                  <children>
                                     <Label text="This is the list of your rents" />
-                                    <TableView editable="true">
+                                    <TableView fx:id="yourCarsColumn" editable="true">
                                       <columns>
-                                        <TableColumn prefWidth="75.0" text="Car ID" />
-                                        <TableColumn prefWidth="75.0" text="Brand" />
-                                          <TableColumn prefWidth="75.0" text="Model" />
-                                          <TableColumn prefWidth="100.0" text="Date reserved" />
-                                          <TableColumn prefWidth="100.0" text="Date returned" />
+                                        <TableColumn fx:id="yourCarIDColumn" prefWidth="75.0" text="Car ID" />
+                                        <TableColumn fx:id="yourBrandColumn" prefWidth="75.0" text="Brand" />
+                                          <TableColumn fx:id="yourModelColumn" prefWidth="75.0" text="Model" />
+                                          <TableColumn fx:id="yourDatareservedColumn" prefWidth="100.0" text="Date reserved" />
+                                          <TableColumn fx:id="yourDatareturnedColumn" prefWidth="100.0" text="Date returned" />
                                       </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
