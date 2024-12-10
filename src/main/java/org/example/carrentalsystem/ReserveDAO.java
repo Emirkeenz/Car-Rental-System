@@ -6,7 +6,6 @@ import java.util.List;
 import java.sql.Date;
 import java.time.*;
 
-import static org.example.carrentalsystem.CarsDAO.getCarById;
 
 public class ReserveDAO {
     private Connection connection;
