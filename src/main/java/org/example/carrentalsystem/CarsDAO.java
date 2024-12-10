@@ -8,15 +8,19 @@ public class CarsDAO {
     private Connection connection;
 
     public CarsDAO() {
-        String url = "jdbc:postgresql:sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0@dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com/car_rental_system";
+        String url = "jdbc:postgresql://dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com:5432/car_rental_system";
         String username = "postgres1";
         String password = "sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0";
+//        String url = "jdbc:postgresql:car_rental_system";
+//        String username = "postgres";
+//        String password = "Tls06141301";
+
 
         try {
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Database is successfully connected...");
+            System.out.println("Cars Database is successfully connected...");
         } catch (SQLException e) {
-            System.out.println("Database connection failed: " + e.getMessage());
+            System.out.println(" Cars Database connection failed: " + e.getMessage());
         }
     }
 

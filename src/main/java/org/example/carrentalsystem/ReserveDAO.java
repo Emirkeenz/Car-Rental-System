@@ -11,15 +11,19 @@ public class ReserveDAO {
     private Connection connection;
     CarsDAO carsDAO;
     public ReserveDAO() {
-        String url = "jdbc:postgresql:sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0@dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com/car_rental_system";
+        String url = "jdbc:postgresql://dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com:5432/car_rental_system";
         String username = "postgres1";
         String password = "sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0";
+//        String url = "jdbc:postgresql:car_rental_system";
+//        String username = "postgres";
+//        String password = "Tls06141301";
+
 
         try {
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Database is successfully connected...");
+            System.out.println("Reserve Database is successfully connected...");
         } catch (SQLException e) {
-            System.out.println("Database connection failed: " + e.getMessage());
+            System.out.println("Reserve Database connection failed: " + e.getMessage());
         }
     }
     public void reserveCar(int carid,int userid, LocalDate startDate, LocalDate endDate) {
