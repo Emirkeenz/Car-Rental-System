@@ -1,94 +1,100 @@
 package org.example.carrentalsystem;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.Date;
-import java.time.*;
-
 
 public class ReserveDAO {
     private Connection connection;
-    CarsDAO carsDAO;
+    private final CarsDAO carsDAO;
+
     public ReserveDAO() {
         String url = "jdbc:postgresql://dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com:5432/car_rental_system";
         String username = "postgres1";
         String password = "sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0";
-//        String url = "jdbc:postgresql:car_rental_system";
-//        String username = "postgres";
-//        String password = "Tls06141301";
-
 
         try {
             connection = DriverManager.getConnection(url, username, password);
+            carsDAO = new CarsDAO();
             System.out.println("Reserve Database is successfully connected...");
         } catch (SQLException e) {
-            System.out.println("Reserve Database connection failed: " + e.getMessage());
+            throw new RuntimeException("Failed to connect to Reserve Database: " + e.getMessage(), e);
         }
     }
-    public void reserveCar(int carid,int userid, LocalDate startDate, LocalDate endDate) {
+
+    public void reserveCar(int carId, int userId, LocalDate startDate, LocalDate endDate) {
         String insertQuery = "INSERT INTO reserves (carid, userid, datereserved, datereturned) VALUES (?, ?, ?, ?)";
-             try(PreparedStatement stmt = connection.prepareStatement(insertQuery)) {
-            stmt.setInt(1, carid);
-            stmt.setInt(2, userid);
-            stmt.setDate(3, Date.valueOf(startDate));  // Преобразование LocalDate в java.sql.Date
+        try (PreparedStatement stmt = connection.prepareStatement(insertQuery)) {
+            stmt.setInt(1, carId);
+            stmt.setInt(2, userId);
+            stmt.setDate(3, Date.valueOf(startDate));
             stmt.setDate(4, Date.valueOf(endDate));
             stmt.executeUpdate();
-        } catch (Exception e) {
-                 System.out.println("Ошибка: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error while reserving car: " + e.getMessage());
         }
-
     }
-    public List<Car> ReservedCars(LocalDate startDate, LocalDate endDate){
-        List<Car> cars = new ArrayList<>();
-        String sql = "SELECT * FROM reserves";
-        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                if(overlap(rs.getDate("datereserved").toLocalDate(), rs.getDate("datereturned").toLocalDate(), startDate, endDate))//проверяем если датырезервации пересекаются с желаемыми датами
-                cars.add(carsDAO.getCarById(rs.getInt("carid")));
+
+    public List<Car> getReservedCars(LocalDate startDate, LocalDate endDate) {
+        List<Car> reservedCars = new ArrayList<>();
+        String query = "SELECT DISTINCT carid FROM reserves WHERE ? <= datereturned AND ? >= datereserved";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setDate(1, Date.valueOf(startDate));
+            stmt.setDate(2, Date.valueOf(endDate));
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Car car = carsDAO.getCarById(rs.getInt("carid"));
+                    if (car != null) {
+                        reservedCars.add(car);
+                    }
+                }
             }
         } catch (SQLException e) {
-            System.out.println("Ошибка: " + e.getMessage());
+            System.err.println("Error fetching reserved cars: " + e.getMessage());
         }
-        return cars;
+        return reservedCars;
     }
 
-    public List<Car> ViewAvailableCars(LocalDate startDate, LocalDate endDate){
-        List<Car> cars = new ArrayList<>();
-        String sql = "SELECT * FROM reserves";
-        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                if(!overlap(rs.getDate("datereserved").toLocalDate(), rs.getDate("datereturned").toLocalDate(), startDate, endDate))//проверяем если датырезервации пересекаются с желаемыми датами
-                    cars.add(carsDAO.getCarById(rs.getInt("carid")));
-            }
-        } catch (SQLException e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
-        return cars;
-
+    public List<Car> getAvailableCars(LocalDate startDate, LocalDate endDate) {
+        List<Car> allCars = carsDAO.getAllCars();
+        List<Car> reservedCars = getReservedCars(startDate, endDate);
+        allCars.removeAll(reservedCars);
+        return allCars;
     }
-    public List<Reserve> ViewClientReserves(int userid){
+
+    public List<Reserve> getClientReservations(int userId) {
         List<Reserve> clientReserves = new ArrayList<>();
-        String sql = "SELECT * FROM reserves WHERE userid = ?";
-        try(PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery(sql)) {
-            stmt.setInt(1, userid);
-            while (rs.next()) {
-                Reserve reserve = new Reserve();
-                        reserve.setStartDate(rs.getDate("datereserved"));
-                        reserve.setEndDate(rs.getDate("datereturned"));
-                        reserve.setReserveId(rs.getInt("reserveid"));
-                        reserve.setCarId(rs.getInt("carid"));
-                        reserve.setUserId(rs.getInt("userid"));
-                clientReserves.add(reserve);
+        String query = "SELECT * FROM reserves WHERE userid = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Reserve reserve = new Reserve();
+                    reserve.setReserveId(rs.getInt("reserveid"));
+                    reserve.setCarId(rs.getInt("carid"));
+                    reserve.setUserId(rs.getInt("userid"));
+                    reserve.setStartDate(rs.getDate("datereserved").toLocalDate());
+                    reserve.setEndDate(rs.getDate("datereturned").toLocalDate());
+                    clientReserves.add(reserve);
+                }
             }
-        } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error fetching client reservations: " + e.getMessage());
         }
         return clientReserves;
     }
-    public void GetCarById(){
 
+    public void removeReservation(int reserveId) {
+        String deleteQuery = "DELETE FROM reserves WHERE reserveid = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(deleteQuery)) {
+            stmt.setInt(1, reserveId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error removing reservation: " + e.getMessage());
+        }
     }
+
     private static boolean overlap(LocalDate startDate1, LocalDate endDate1, LocalDate startDate2, LocalDate endDate2) {
         return !startDate1.isAfter(endDate2) && !startDate2.isAfter(endDate1);
     }

@@ -9,7 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 public class ClientController {
 
@@ -18,57 +18,28 @@ public class ClientController {
 
     @FXML
     private TableColumn<Car, Integer> carIDColumn;
-
     @FXML
     private TableColumn<Car, String> carBrandColumn;
-
     @FXML
     private TableColumn<Car, String> carModelColumn;
-
     @FXML
     private TableColumn<Car, Double> carPriceColumn;
 
     @FXML
-    private TextField carIDField;
+    private TextField carIDField, carBrandField, carModelField, carPriceField;
 
     @FXML
-    private TextField carBrandField;
+    private DatePicker dateRentedField, dateReturnedField;
 
     @FXML
-    private TextField carModelField;
-
-    @FXML
-    private TextField carPriceField;
-
-    @FXML
-    private TextField dataRentedField;
-
-    @FXML
-    private TextField DataReturnedField;
-
-    @FXML
-    private DatePicker dateRentedField;
-
-    @FXML
-    private DatePicker dateReturnedField;
-
-    @FXML
-    private Button rentSubmitButton;
+    private Button rentSubmitButton, returnCarButton;
 
     @FXML
     private TableView<Reserve> yourCarsTable;
-
     @FXML
     private TableColumn<Reserve, Integer> reservedCarIDColumn;
-
     @FXML
-    private TableColumn<Reserve, LocalDate> startDateColumn;
-
-    @FXML
-    private TableColumn<Reserve, LocalDate> endDateColumn;
-
-    @FXML
-    private Button returnCarButton;
+    private TableColumn<Reserve, LocalDate> startDateColumn, endDateColumn;
 
     private final ObservableList<Car> availableCars = FXCollections.observableArrayList();
     private final ObservableList<Reserve> userReserves = FXCollections.observableArrayList();
@@ -76,120 +47,143 @@ public class ClientController {
     private final CarsDAO carsDAO = new CarsDAO();
     private final ReserveDAO reserveDAO = new ReserveDAO();
 
-    private int currentUserId = 1;
-
-    private void enterCarEditMode(Car car) {
-        carIDField.setText(car.getCarName());
-        carBrandField.setText(car.getCarBrand());
-        carModelField.setText(car.getCarModel());
-        carPriceField.setText(String.valueOf(car.getPrice()));
-        dateRentedField.setValue(LocalDate.now());
-        dateReturnedField.setValue(LocalDate.now());
-    }
-
-
+    private static final Logger logger = Logger.getLogger(ClientController.class.getName());
+    private final int currentUserId = 1; // Example user ID.
 
     @FXML
     public void initialize() {
         configureTables();
-        loadCarsFromDatabase();
+        loadAvailableCars();
         loadUserReservations();
+        setupButtonBindings();
     }
 
     private void configureTables() {
-        // Configure available cars table
         carIDColumn.setCellValueFactory(new PropertyValueFactory<>("carId"));
         carBrandColumn.setCellValueFactory(new PropertyValueFactory<>("carBrand"));
         carModelColumn.setCellValueFactory(new PropertyValueFactory<>("carModel"));
         carPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         carsTable.setItems(availableCars);
 
-        carsTable.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                Car selectedCar = carsTable.getSelectionModel().getSelectedItem();
-                if (selectedCar != null) {
-                    enterCarEditMode(selectedCar);
-                }
-            }
-        });
-
-        // Configure user's reserved cars table
         reservedCarIDColumn.setCellValueFactory(new PropertyValueFactory<>("carId"));
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
         yourCarsTable.setItems(userReserves);
+
+        carsTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Car selectedCar = carsTable.getSelectionModel().getSelectedItem();
+                if (selectedCar != null) populateCarForm(selectedCar);
+            }
+        });
     }
 
-    private void loadCarsFromDatabase() {
-        List<Car> cars = carsDAO.getAllCars();
-        availableCars.setAll(cars);
+    private void loadAvailableCars() {
+        availableCars.setAll(carsDAO.getAllCars());
     }
 
     private void loadUserReservations() {
-        List<Reserve> reservations = reserveDAO.getReservationsByUserId(currentUserId);
-        userReserves.setAll(reservations);
+        userReserves.setAll(reserveDAO.getClientReservations(currentUserId));
+    }
+
+    private void setupButtonBindings() {
+        rentSubmitButton.disableProperty().bind(
+                carIDField.textProperty().isEmpty()
+                        .or(dateRentedField.valueProperty().isNull())
+                        .or(dateReturnedField.valueProperty().isNull())
+        );
+        returnCarButton.disableProperty().bind(
+                yourCarsTable.getSelectionModel().selectedItemProperty().isNull()
+        );
     }
 
     @FXML
     private void submitRent(ActionEvent event) {
+        if (!validateRentForm()) return;
+
+        int carId = Integer.parseInt(carIDField.getText());
+        LocalDate startDate = dateRentedField.getValue();
+        LocalDate endDate = dateReturnedField.getValue();
+
+        Car car = availableCars.stream()
+                .filter(c -> c.getCarId() == carId)
+                .findFirst()
+                .orElse(null);
+
+        if (car == null) {
+            showAlert("Car Not Found", "No car found with the given ID.", Alert.AlertType.WARNING);
+            return;
+        }
+
         try {
-            int carId = Integer.parseInt(carIDField.getText());
-            LocalDate startDate = dateRentedField.getValue();
-            LocalDate endDate = dateReturnedField.getValue();
-
-            if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-                showAlert("Ошибка даты", "Пожалуйста, введите правильные данные.", Alert.AlertType.WARNING);
-                return;
-            }
-
-            Car car = availableCars.stream()
-                    .filter(c -> c.getCarId() == carId)
-                    .findFirst()
-                    .orElse(null);
-
-            if (car == null) {
-                showAlert("Машина не найдена", "Машина с указанной ID не доступна", Alert.AlertType.WARNING);
-                return;
-            }
-
-            Reserve newReservation = new Reserve(
-                    java.sql.Date.valueOf(startDate),
-                    java.sql.Date.valueOf(endDate),
-                    currentUserId,
-                    carId,
-                    0
-            );
-
-            reserveDAO.addReservation(newReservation);
+            reserveDAO.reserveCar(carId, currentUserId, startDate, endDate);
+            Reserve newReservation = new Reserve(startDate, endDate, currentUserId, carId, 0);
             userReserves.add(newReservation);
             availableCars.remove(car);
+
             clearRentForm();
-            showAlert("Успех", "Машина была зарезервирована успешно.", Alert.AlertType.INFORMATION);
-        } catch (NumberFormatException e) {
-            showAlert("Ошибка ввода", "Пожалуйста, введите правильные данные.", Alert.AlertType.ERROR);
+            showAlert("Success", "Car rented successfully!", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            logger.severe("Error while reserving car: " + e.getMessage());
+            showAlert("Error", "Failed to rent car. Please try again.", Alert.AlertType.ERROR);
         }
     }
 
     @FXML
     private void returnCar(ActionEvent event) {
         Reserve selectedReserve = yourCarsTable.getSelectionModel().getSelectedItem();
-        if (selectedReserve == null) {
-            showAlert("Нет машин", "Пожалуйста, выберите машину для возврата.", Alert.AlertType.WARNING);
-            return;
+        if (selectedReserve == null) return;
+
+        try {
+            reserveDAO.removeReservation(selectedReserve.getReserveId());
+            userReserves.remove(selectedReserve);
+            availableCars.add(carsDAO.getCarById(selectedReserve.getCarId()));
+
+            showAlert("Success", "Car returned successfully!", Alert.AlertType.INFORMATION);
+        } catch (Exception e) {
+            logger.severe("Error while returning car: " + e.getMessage());
+            showAlert("Error", "Failed to return car. Please try again.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private boolean validateRentForm() {
+        try {
+            Integer.parseInt(carIDField.getText());
+        } catch (NumberFormatException e) {
+            showAlert("Validation Error", "Car ID must be numeric.", Alert.AlertType.WARNING);
+            return false;
         }
 
-        reserveDAO.removeReservation(selectedReserve.getReserveId());
-        userReserves.remove(selectedReserve);
+        LocalDate startDate = dateRentedField.getValue();
+        LocalDate endDate = dateReturnedField.getValue();
 
-        Car returnedCar = carsDAO.getCarById(selectedReserve.getCarId());
-        if (returnedCar != null) {
-            availableCars.add(returnedCar);
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
+            showAlert("Validation Error", "Invalid rental period.", Alert.AlertType.WARNING);
+            return false;
         }
-        showAlert("Успех", "Машина была успешно возвращена.", Alert.AlertType.INFORMATION);
+
+        if (startDate.isBefore(LocalDate.now())) {
+            showAlert("Validation Error", "Start date cannot be in the past.", Alert.AlertType.WARNING);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void populateCarForm(Car car) {
+        carIDField.setText(String.valueOf(car.getCarId()));
+        carBrandField.setText(car.getCarBrand());
+        carModelField.setText(car.getCarModel());
+        carPriceField.setText(String.valueOf(car.getPrice()));
+        dateRentedField.setValue(LocalDate.now());
+        dateReturnedField.setValue(LocalDate.now().plusDays(1));
     }
 
     private void clearRentForm() {
         carIDField.clear();
+        carBrandField.clear();
+        carModelField.clear();
+        carPriceField.clear();
         dateRentedField.setValue(null);
         dateReturnedField.setValue(null);
     }
