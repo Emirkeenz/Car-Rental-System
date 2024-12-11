@@ -8,15 +8,19 @@ public class UserDAO {
     private Connection connection;
 
     public UserDAO() {
-        String url = "jdbc:postgresql:car_rental_system";
-        String username = "postgres";
-        String password = "Tls06141301";
+        String url = "jdbc:postgresql://dpg-ctarc78gph6c73erli4g-a.frankfurt-postgres.render.com:5432/car_rental_system";
+        String username = "postgres1";
+        String password = "sgPzhNmgGnTsUwlzLlj87aX0VoCCePF0";
+//        String url = "jdbc:postgresql:car_rental_system";
+//        String username = "postgres";
+//        String password = "Tls06141301";
+
 
         try {
             connection = DriverManager.getConnection(url, username, password);
-            System.out.println("Database is successfully connected...");
+            System.out.println("User Database is successfully connected...");
         } catch (SQLException e) {
-            System.out.println("Database connection failed: " + e.getMessage());
+            System.out.println("User Database connection failed: " + e.getMessage());
         }
     }
 
@@ -27,7 +31,7 @@ public class UserDAO {
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, user.getUserName());
             statement.setString(2, user.getPassword());
-            statement.setString(3, user.getRole().toString());
+            statement.setObject(3, user.getRole().name(), Types.OTHER);
 
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {

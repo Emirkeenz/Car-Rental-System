@@ -100,6 +100,7 @@ public class LoginController {
             stage.setScene(new Scene(root));
         } catch (IOException e) {
             showAlert("Error", "Failed to load " + title + " screen.");
+            showAlert("Error","Ошибка: " + e.getMessage());
         }
     }
 }
