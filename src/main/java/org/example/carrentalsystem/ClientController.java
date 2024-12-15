@@ -58,6 +58,7 @@ public class ClientController {
         setupButtonBindings();
     }
 
+    @FXML
     private void configureTables() {
         carIDColumn.setCellValueFactory(new PropertyValueFactory<>("carId"));
         carBrandColumn.setCellValueFactory(new PropertyValueFactory<>("carBrand"));

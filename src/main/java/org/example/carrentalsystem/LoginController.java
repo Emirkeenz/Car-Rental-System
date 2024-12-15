@@ -92,6 +92,7 @@ public class LoginController {
         try {
             // Загружаем FXML-файл
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            //FXMLLoader loader = new FXMLLoader(getClass().getResource("C:/Users/user/IdeaProjects/Car-Rental-System/src/main/resources/org/example/carrentalsystem/ClientPanel.fxml"));
             Parent root = loader.load();
 
             // Получаем текущую сцену и меняем её
@@ -99,8 +100,8 @@ public class LoginController {
             stage.setTitle(title);
             stage.setScene(new Scene(root));
         } catch (IOException e) {
-            showAlert("Error", "Failed to load " + title + " screen.");
-            showAlert("Error","Ошибка: " + e.getMessage());
+            showAlert("Error", "Failed to load " + title + " screen."+"\n"+"Ошибка: " + e.getMessage());
+
         }
     }
 }
