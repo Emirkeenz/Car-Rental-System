@@ -56,17 +56,55 @@ public class ReserveDAO {
         return reservedCars;
     }
 
-    public List<Car> getAvailableCars(LocalDate startDate, LocalDate endDate) {
-        List<Car> allCars = carsDAO.getAllCars();
-        List<Car> reservedCars = getReservedCars(startDate, endDate);
-        allCars.removeAll(reservedCars);
-        return allCars;
+    public List<Car> ViewAvailableCars(LocalDate startDate, LocalDate endDate){
+        List<Car> cars = new ArrayList<>();
+        String sql = "SELECT * FROM reserves";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                if(!overlap(rs.getDate("datereserved").toLocalDate(), rs.getDate("datereturned").toLocalDate(), startDate, endDate))//проверяем если датырезервации пересекаются с желаемыми датами
+                    cars.add(carsDAO.getCarById(rs.getInt("carid")));
+            }
+        } catch (SQLException e) {
+            //System.out.println("Ошибка: " + e.getMessage());
+            StackTraceElement element = e.getStackTrace()[0];
+            System.out.println("Ошибка в классе " + element.getClassName() +
+                    ", методе " + element.getMethodName() +
+                    " на строке " + element.getLineNumber() +
+                    ": " + e.getMessage());
+        }
+        return cars;
+
     }
+
+    public List<Reserve> getAllReservations(){
+        List<Reserve> Reserves = new ArrayList<>();
+        String sql = "SELECT * FROM reserves";
+        try(PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Reserve reserve = new Reserve();
+                reserve.setStartDate(rs.getDate("datereserved").toLocalDate());
+                reserve.setEndDate(rs.getDate("datereturned").toLocalDate());
+                reserve.setReserveId(rs.getInt("reserveid"));
+                reserve.setCarId(rs.getInt("carid"));
+                reserve.setUserId(rs.getInt("userid"));
+             Reserves.add(reserve);
+            }
+        } catch (Exception e) {
+            //System.out.println("Ошибка: " + e.getMessage());
+            StackTraceElement element = e.getStackTrace()[0];
+            System.out.println("Ошибка в классе " + element.getClassName() +
+                    ", методе " + element.getMethodName() +
+                    " на строке " + element.getLineNumber() +
+                    ": " + e.getMessage());
+        }
+        return Reserves;
+    }
+
 
     public List<Reserve> getClientReservations(int userid){
         List<Reserve> clientReserves = new ArrayList<>();
         String sql = "SELECT * FROM reserves WHERE userid = ?";
-        try(PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery(sql)) {
+        try(PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
             stmt.setInt(1, userid);
             while (rs.next()) {
                 Reserve reserve = new Reserve();
@@ -78,7 +116,12 @@ public class ReserveDAO {
                 clientReserves.add(reserve);
             }
         } catch (Exception e) {
-            System.out.println("Ошибка: " + e.getMessage());
+            //System.out.println("Ошибка: " + e.getMessage());
+            StackTraceElement element = e.getStackTrace()[0];
+            System.out.println("Ошибка в классе " + element.getClassName() +
+                    ", методе " + element.getMethodName() +
+                    " на строке " + element.getLineNumber() +
+                    ": " + e.getMessage());
         }
         return clientReserves;
     }

@@ -112,6 +112,7 @@ public class AdminController {
         // Загрузка данных из базы
         loadCars();
         loadUsers();
+        loadReserves();
 
         carsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
@@ -139,6 +140,8 @@ public class AdminController {
     private void loadUsers() {
         userList.setAll(usersDAO.getAllUsers());
     }
+
+    private void loadReserves() {reserveList.setAll(reserveDAO.getAllReservations());}
 
     @FXML
     private void addCar() {

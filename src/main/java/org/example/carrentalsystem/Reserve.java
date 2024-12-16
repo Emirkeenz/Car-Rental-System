@@ -33,7 +33,7 @@ public class Reserve {
     }
 
     public void setStartDate(LocalDate startDate) {
-        if (this.endDate != null && startDate.isAfter(this.endDate)) {
+        if (this.endDate != null && startDate.isBefore(this.endDate)) {
             throw new IllegalArgumentException("Start date must be before or equal to end date.");
         }
         this.startDate = startDate;
