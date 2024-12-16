@@ -40,18 +40,20 @@
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
                                                     <children>
                                                         <DatePicker fx:id="dateRentedField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                         <DatePicker fx:id="dateReturnedField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                        <TextField fx:id="carIDField" GridPane.columnIndex="1" />
-                                                        <TextField fx:id="carBrandField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="carIDField" editable="false" GridPane.columnIndex="1" />
+                                                        <TextField fx:id="carBrandField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <Label text="Car ID" />
                                                         <Label text="Brand" GridPane.rowIndex="1" />
                                                         <Label text="Date Rented" GridPane.rowIndex="3" />
                                                         <Label text="Date Returned" GridPane.rowIndex="4" />
                                                         <Label text="Model" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="carModelField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="carModelField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Button fx:id="viewAvailableButton" mnemonicParsing="false" onAction="#onViewAvailableClick" prefHeight="25.0" prefWidth="118.0" text="View Available" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                                                     </children>
                                                 </GridPane>
                                                 <GridPane>

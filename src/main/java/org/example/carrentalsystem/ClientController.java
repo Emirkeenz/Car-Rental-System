@@ -1,5 +1,6 @@
 package org.example.carrentalsystem;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,10 +36,14 @@ public class ClientController {
     private DatePicker dateRentedField, dateReturnedField;
 
     @FXML
-    private Button rentSubmitButton, returnCarButton;
+    private Button rentSubmitButton, returnCarButton, viewAvailableButton;
 
     @FXML
     private TableView<Reserve> yourCarsTable;
+    @FXML
+    private TableColumn<Reserve, Integer> reservedCarModelColumn;
+    @FXML
+    private TableColumn<Reserve, Integer> reservedCarBrandColumn;
     @FXML
     private TableColumn<Reserve, Integer> reservedCarIDColumn;
     @FXML
@@ -55,14 +60,17 @@ public class ClientController {
 
     @FXML
     public void initialize() {
-        configureTables();  
-        loadAvailableCars();
+        configureTables();
         loadUserReservations();
         setupButtonBindings();
         setupDateListeners();
     }
 
-
+    @FXML
+    private void onViewAvailableClick() {
+        loadAvailableCars();
+        configureTables();
+    }
 
     @FXML
     private Label welcomeLabel;
@@ -85,6 +93,17 @@ public class ClientController {
         reservedCarIDColumn.setCellValueFactory(new PropertyValueFactory<>("carId"));
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        carBrandColumn.setCellValueFactory(param -> {
+            Car reserve = param.getValue();
+            String brand = carsDAO.getCarById(reserve.getCarId()).getCarBrand(); // Метод для получения бренда
+            return new SimpleStringProperty(brand);
+        });
+
+        carModelColumn.setCellValueFactory(param -> {
+            Car reserve = param.getValue();
+            String model = carsDAO.getCarById(reserve.getCarId()).getCarModel(); // Метод для получения модели
+            return new SimpleStringProperty(model);
+        });
         yourCarsTable.setItems(userReserves);
 
         carsTable.setOnMouseClicked(event -> {
@@ -96,7 +115,7 @@ public class ClientController {
     }
 
     private void loadAvailableCars() {
-        availableCars.setAll(carsDAO.getAllCars());
+        availableCars.setAll(reserveDAO.ViewAvailableCars(dateRentedField.getValue(),dateReturnedField.getValue()));
     }
 
     private void loadUserReservations() {

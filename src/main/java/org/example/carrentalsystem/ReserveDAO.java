@@ -57,12 +57,12 @@ public class ReserveDAO {
     }
 
     public List<Car> ViewAvailableCars(LocalDate startDate, LocalDate endDate){
-        List<Car> cars = new ArrayList<>();
+        List<Car> cars = carsDAO.getAllCars();
         String sql = "SELECT * FROM reserves";
         try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                if(!overlap(rs.getDate("datereserved").toLocalDate(), rs.getDate("datereturned").toLocalDate(), startDate, endDate))//проверяем если датырезервации пересекаются с желаемыми датами
-                    cars.add(carsDAO.getCarById(rs.getInt("carid")));
+                if(overlap(rs.getDate("datereserved").toLocalDate(), rs.getDate("datereturned").toLocalDate(), startDate, endDate))//проверяем если датырезервации пересекаются с желаемыми датами
+                    cars.remove(carsDAO.getCarById(rs.getInt("carid")));
             }
         } catch (SQLException e) {
             //System.out.println("Ошибка: " + e.getMessage());
