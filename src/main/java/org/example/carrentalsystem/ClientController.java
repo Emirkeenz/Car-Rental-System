@@ -27,6 +27,9 @@ public class ClientController {
 
     @FXML
     private TextField carIDField, carBrandField, carModelField, carPriceField;
+    @FXML
+    private TextField totalCost, amountOfDays; // For total days and cost
+
 
     @FXML
     private DatePicker dateRentedField, dateReturnedField;
@@ -52,10 +55,23 @@ public class ClientController {
 
     @FXML
     public void initialize() {
-        configureTables();
+        configureTables();  
         loadAvailableCars();
         loadUserReservations();
         setupButtonBindings();
+        setupDateListeners();
+    }
+
+
+
+    @FXML
+    private Label welcomeLabel;
+
+
+
+    private void setupDateListeners() {
+        dateRentedField.valueProperty().addListener((observable, oldValue, newValue) -> calculateAndUpdateTotal());
+        dateReturnedField.valueProperty().addListener((observable, oldValue, newValue) -> calculateAndUpdateTotal());
     }
 
     @FXML
@@ -85,6 +101,31 @@ public class ClientController {
 
     private void loadUserReservations() {
         userReserves.setAll(reserveDAO.getClientReservations(currentUserId));
+    }
+    private void calculateAndUpdateTotal() {
+        LocalDate startDate = dateRentedField.getValue();
+        LocalDate endDate = dateReturnedField.getValue();
+
+        if (startDate != null && endDate != null && !startDate.isAfter(endDate)) {
+            // Calculate total days
+            long totalDays = startDate.until(endDate).getDays() + 1;
+
+            double pricePerDay;
+            try {
+                pricePerDay = Double.parseDouble(carPriceField.getText());
+            } catch (NumberFormatException e) {
+                pricePerDay = 0.0; // Default to 0 if price is invalid
+            }
+            double totalCostDouble = totalDays * pricePerDay;
+
+            // Update fields
+            amountOfDays.setText(String.valueOf(totalDays));
+            totalCost.setText(String.format("%.2f", totalCostDouble));
+        } else {
+            // Reset fields if dates are invalid
+            amountOfDays.clear();
+            totalCost.clear();
+        }
     }
 
     private void setupButtonBindings() {
@@ -178,6 +219,7 @@ public class ClientController {
         carPriceField.setText(String.valueOf(car.getPrice()));
         dateRentedField.setValue(LocalDate.now());
         dateReturnedField.setValue(LocalDate.now().plusDays(1));
+        calculateAndUpdateTotal();
     }
 
     private void clearRentForm() {

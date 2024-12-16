@@ -70,9 +70,11 @@ public class LoginController {
         alert.showAndWait();
     }
 
+
     private void navigateToDashboard(User user) {
         String fxmlFile;
         String title;
+
 
         if (user.getRole() == Role.ADMIN) {
             fxmlFile = "AdminPanel.fxml"; // Файл интерфейса для администратора
@@ -90,6 +92,7 @@ public class LoginController {
 
     private void loadScene(String fxmlFile, String title) {
         try {
+
             // Загружаем FXML-файл
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             //FXMLLoader loader = new FXMLLoader(getClass().getResource("C:/Users/user/IdeaProjects/Car-Rental-System/src/main/resources/org/example/carrentalsystem/ClientPanel.fxml"));

@@ -72,7 +72,7 @@
                                                         <Button fx:id="rentSubmitButton" mnemonicParsing="false" onAction="#submitRent" text="Submit a rent" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                         <Label text="Amount of days __" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <Label text="Total __" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="priceDay" GridPane.columnIndex="1" />
+                                                        <TextField fx:id="carPriceField" GridPane.columnIndex="1" />
                                                         <TextField fx:id="amountOfDays" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <TextField fx:id="totalCost" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                     </children>

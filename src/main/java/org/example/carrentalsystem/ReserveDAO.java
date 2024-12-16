@@ -63,24 +63,22 @@ public class ReserveDAO {
         return allCars;
     }
 
-    public List<Reserve> getClientReservations(int userId) {
+    public List<Reserve> getClientReservations(int userid){
         List<Reserve> clientReserves = new ArrayList<>();
-        String query = "SELECT * FROM reserves WHERE userid = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, userId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Reserve reserve = new Reserve();
-                    reserve.setReserveId(rs.getInt("reserveid"));
-                    reserve.setCarId(rs.getInt("carid"));
-                    reserve.setUserId(rs.getInt("userid"));
-                    reserve.setStartDate(rs.getDate("datereserved").toLocalDate());
-                    reserve.setEndDate(rs.getDate("datereturned").toLocalDate());
-                    clientReserves.add(reserve);
-                }
+        String sql = "SELECT * FROM reserves WHERE userid = ?";
+        try(PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery(sql)) {
+            stmt.setInt(1, userid);
+            while (rs.next()) {
+                Reserve reserve = new Reserve();
+                reserve.setStartDate(rs.getDate("datereserved").toLocalDate());
+                reserve.setEndDate(rs.getDate("datereturned").toLocalDate());
+                reserve.setReserveId(rs.getInt("reserveid"));
+                reserve.setCarId(rs.getInt("carid"));
+                reserve.setUserId(rs.getInt("userid"));
+                clientReserves.add(reserve);
             }
-        } catch (SQLException e) {
-            System.err.println("Error fetching client reservations: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Ошибка: " + e.getMessage());
         }
         return clientReserves;
     }
