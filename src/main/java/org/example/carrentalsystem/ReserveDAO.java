@@ -104,19 +104,21 @@ public class ReserveDAO {
     public List<Reserve> getClientReservations(int userid){
         List<Reserve> clientReserves = new ArrayList<>();
         String sql = "SELECT * FROM reserves WHERE userid = ?";
-        try(PreparedStatement stmt = connection.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-            stmt.setInt(1, userid);
-            while (rs.next()) {
-                Reserve reserve = new Reserve();
-                reserve.setStartDate(rs.getDate("datereserved").toLocalDate());
-                reserve.setEndDate(rs.getDate("datereturned").toLocalDate());
-                reserve.setReserveId(rs.getInt("reserveid"));
-                reserve.setCarId(rs.getInt("carid"));
-                reserve.setUserId(rs.getInt("userid"));
-                clientReserves.add(reserve);
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, userid);  // Устанавливаем значение параметра
+            try (ResultSet rs = stmt.executeQuery()) {  // Выполняем запрос после установки параметра
+                while (rs.next()) {
+                    Reserve reserve = new Reserve();
+                    reserve.setStartDate(rs.getDate("datereserved").toLocalDate());
+                    reserve.setEndDate(rs.getDate("datereturned").toLocalDate());
+                    reserve.setReserveId(rs.getInt("reserveid"));
+                    reserve.setCarId(rs.getInt("carid"));
+                    reserve.setUserId(rs.getInt("userid"));
+                    clientReserves.add(reserve);
+                }
             }
         } catch (Exception e) {
-            //System.out.println("Ошибка: " + e.getMessage());
+            // Выводим подробную информацию об ошибке
             StackTraceElement element = e.getStackTrace()[0];
             System.out.println("Ошибка в классе " + element.getClassName() +
                     ", методе " + element.getMethodName() +

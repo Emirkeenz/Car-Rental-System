@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -41,9 +42,9 @@ public class ClientController {
     @FXML
     private TableView<Reserve> yourCarsTable;
     @FXML
-    private TableColumn<Reserve, Integer> reservedCarModelColumn;
+    private TableColumn<Reserve, String> reservedCarModelColumn;
     @FXML
-    private TableColumn<Reserve, Integer> reservedCarBrandColumn;
+    private TableColumn<Reserve, String> reservedCarBrandColumn;
     @FXML
     private TableColumn<Reserve, Integer> reservedCarIDColumn;
     @FXML
@@ -93,14 +94,14 @@ public class ClientController {
         reservedCarIDColumn.setCellValueFactory(new PropertyValueFactory<>("carId"));
         startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
-        carBrandColumn.setCellValueFactory(param -> {
-            Car reserve = param.getValue();
+       reservedCarBrandColumn.setCellValueFactory(param -> {
+            Reserve reserve = param.getValue();
             String brand = carsDAO.getCarById(reserve.getCarId()).getCarBrand(); // Метод для получения бренда
             return new SimpleStringProperty(brand);
         });
 
-        carModelColumn.setCellValueFactory(param -> {
-            Car reserve = param.getValue();
+        reservedCarModelColumn.setCellValueFactory(param -> {
+            Reserve reserve = param.getValue();
             String model = carsDAO.getCarById(reserve.getCarId()).getCarModel(); // Метод для получения модели
             return new SimpleStringProperty(model);
         });
@@ -236,8 +237,8 @@ public class ClientController {
         carBrandField.setText(car.getCarBrand());
         carModelField.setText(car.getCarModel());
         carPriceField.setText(String.valueOf(car.getPrice()));
-        dateRentedField.setValue(LocalDate.now());
-        dateReturnedField.setValue(LocalDate.now().plusDays(1));
+        //dateRentedField.setValue(LocalDate.now());
+        //dateReturnedField.setValue(LocalDate.now().plusDays(1));
         calculateAndUpdateTotal();
     }
 

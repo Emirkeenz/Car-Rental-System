@@ -138,8 +138,8 @@
                                                 <TableView fx:id="yourCarsTable" editable="true">
                                                     <columns>
                                                         <TableColumn fx:id="reservedCarIDColumn" prefWidth="75.0" text="Car ID" />
-                                                        <TableColumn fx:id="yourBrandColumn" prefWidth="75.0" text="Brand" />
-                                                        <TableColumn fx:id="yourModelColumn" prefWidth="75.0" text="Model" />
+                                                        <TableColumn fx:id="reservedCarBrandColumn" prefWidth="75.0" text="Brand" />
+                                                        <TableColumn fx:id="reservedCarModelColumn" prefWidth="75.0" text="Model" />
                                                         <TableColumn fx:id="startDateColumn" prefWidth="100.0" text="Date reserved" />
                                                         <TableColumn fx:id="endDateColumn" prefWidth="100.0" text="Date returned" />
                                                     </columns>
