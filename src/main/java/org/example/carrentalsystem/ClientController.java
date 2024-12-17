@@ -57,7 +57,16 @@ public class ClientController {
     private final ReserveDAO reserveDAO = new ReserveDAO();
 
     private static final Logger logger = Logger.getLogger(ClientController.class.getName());
-    private final int currentUserId = 1; // Example user ID.
+
+
+    private final int currentUserId; // User ID from UserSession
+
+    public ClientController() {
+        // Get the logged-in user ID from UserSession
+        this.currentUserId = UserSession.getInstance().getUserId();
+    }
+
+
 
     @FXML
     public void initialize() {
@@ -66,15 +75,13 @@ public class ClientController {
         setupButtonBindings();
         setupDateListeners();
     }
-
     @FXML
     private void onViewAvailableClick() {
         loadAvailableCars();
         configureTables();
     }
 
-    @FXML
-    private Label welcomeLabel;
+
 
 
 
