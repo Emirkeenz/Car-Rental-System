@@ -43,7 +43,7 @@ This project includes the following functionalities:
 <img width="720" alt="Снимок экрана 2024-12-18 в 01 51 50" src="https://github.com/user-attachments/assets/34784573-907a-4307-8247-977e74d3dbec" />
 
 ## Weekly Meeting Documentation
-_Provide a Google Docs link or summary here documenting the discussions and decisions made in weekly team meetings._
+https://docs.google.com/document/d/1npBymi3QRV7cZk06ibK1iRRoYOazp-diBpd8LZToGSo/edit?usp=sharing
 
 ## Commit History
 _Commit history is maintained in the GitHub repository._
