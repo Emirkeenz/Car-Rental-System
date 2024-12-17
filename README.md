@@ -29,10 +29,12 @@ This project includes the following functionalities:
 ## Screenshots
 ### Login Controller
 <img width="463" alt="Снимок экрана 2024-12-18 в 01 46 55" src="https://github.com/user-attachments/assets/5a72421e-08c9-4ae1-9f06-627d814fbbe9" />
+
 ### Admin Controller
 <img width="658" alt="Снимок экрана 2024-12-18 в 01 47 38" src="https://github.com/user-attachments/assets/4cc0b3b0-32a2-4280-b566-ca0eee45e344" />
 <img width="652" alt="Снимок экрана 2024-12-18 в 01 48 10" src="https://github.com/user-attachments/assets/08435a41-1b9f-4bc2-81e5-69e25e59cd87" />
 <img width="653" alt="Снимок экрана 2024-12-18 в 01 49 03" src="https://github.com/user-attachments/assets/1e0453d6-fc89-4403-8082-21a85f2a9ad8" />
+
 ### User Controller 
 <img width="674" alt="Снимок экрана 2024-12-18 в 01 49 57" src="https://github.com/user-attachments/assets/41ef6955-a2b5-40fd-9e79-fa55507b7a73" />
 <img width="673" alt="Снимок экрана 2024-12-18 в 01 50 16" src="https://github.com/user-attachments/assets/b3c76468-08df-4dd8-bd56-ee1c246c30f1" />
