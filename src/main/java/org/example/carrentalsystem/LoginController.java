@@ -31,6 +31,7 @@ public class LoginController {
 
     @FXML
     public void initialize() {
+        UserSession.getInstance().clearSession();
         loginButton.setOnAction(event -> handleLogin());
     }
 
@@ -45,10 +46,10 @@ public class LoginController {
 
         User user = authenticateUser(username, password);
         if (user != null) {
-            // Логика успешного входа
-            navigateToDashboard(user); // Перенаправление в зависимости от роли
+            navigateToDashboard(user);
         } else {
             showAlert("Error", "Invalid username or password.");
+            UserSession.clearSession(); // Reset session data
         }
     }
 
@@ -74,13 +75,16 @@ public class LoginController {
     private void navigateToDashboard(User user) {
         String fxmlFile;
         String title;
+        // Store user details in UserSession
+        UserSession.getInstance().setUserId(user.getUserId());
+        UserSession.getInstance().setUserRole(user.getRole());
 
-
+        // Decide which dashboard to load
         if (user.getRole() == Role.ADMIN) {
-            fxmlFile = "AdminPanel.fxml"; // Файл интерфейса для администратора
+            fxmlFile = "AdminPanel.fxml";
             title = "Admin Dashboard";
         } else if (user.getRole() == Role.CLIENT) {
-            fxmlFile = "ClientPanel.fxml"; // Файл интерфейса для клиента
+            fxmlFile = "ClientPanel.fxml";
             title = "Client Dashboard";
         } else {
             showAlert("Error", "Unknown role: " + user.getRole());
@@ -89,6 +93,7 @@ public class LoginController {
 
         loadScene(fxmlFile, title);
     }
+
 
     private void loadScene(String fxmlFile, String title) {
         try {
