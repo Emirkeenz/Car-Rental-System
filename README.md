@@ -50,3 +50,6 @@ _Commit history is maintained in the GitHub repository._
 
 ## GitHub Link
 [Car Rental System Repository](https://github.com/Emirkeenz/Car-Rental-System)
+
+## Presentation Link
+https://docs.google.com/presentation/d/1YFwzpGGfee82gAel-vh6qKPN1IiU0Ql_6s03g-Egq4M/edit#slide=id.g320245acf11_0_96
